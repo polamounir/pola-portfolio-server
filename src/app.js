@@ -29,7 +29,14 @@ const skillRouter = require("./routes/skill.routes");
 const visitorRouter = require("./routes/visitor.routes");
 const messageRouter = require("./routes/message.routes");
 const alertRouter = require("./routes/alert.routes");
-const themeRouter = require("./routes/theme.routes");
+// Health check route
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Pola Mounir Portfolio API Server is running smoothly",
+    timestamp: new Date().toISOString(),
+  });
+});
 
 // Routes declaration
 app.use("/api/v1/auth", authRouter);
