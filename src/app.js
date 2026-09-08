@@ -29,6 +29,7 @@ const skillRouter = require("./routes/skill.routes");
 const visitorRouter = require("./routes/visitor.routes");
 const messageRouter = require("./routes/message.routes");
 const alertRouter = require("./routes/alert.routes");
+const themeRouter = require("./routes/theme.routes");
 // Health check route
 app.get("/", (req, res) => {
   res.status(200).json({
