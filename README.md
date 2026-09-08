@@ -1,154 +1,146 @@
-# Portfolio Backend API
+<div align="center">
 
-A robust, modern RESTful Node.js/Express backend that serves and manages data for a personal portfolio website and admin dashboard.
+# Pola Mounir — Portfolio Backend API Server
 
-## Overview
+A production-grade, RESTful **Node.js** and **Express** backend API powering the personal developer portfolio and admin control panel, featuring **MongoDB**, **JWT authentication**, **Cloudinary integration**, and real-time **visitor analytics**.
 
-This project provides all the necessary APIs to dynamically render a personal portfolio (Hero, About, Projects, Experience, Skills) and handle contact form submissions. It also includes comprehensive tracking of visitor analytics (IP, User Agent, Fingerprint) and a secure JWT-authenticated Admin Dashboard API for content management.
+[![Node.js](https://img.shields.io/badge/Node.js-v18.0.0+-339933.svg?style=flat-square&logo=nodedotjs)](https://nodejs.org/)
+[![Express.js](https://img.shields.io/badge/Express.js-v4.19.2-000000.svg?style=flat-square&logo=express)](https://expressjs.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose_v8.4.1-47A248.svg?style=flat-square&logo=mongodb)](https://www.mongodb.com/)
+[![Cloudinary](https://img.shields.io/badge/Cloudinary-Media_Storage-3448C5.svg?style=flat-square&logo=cloudinary)](https://cloudinary.com/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
 
-## Tech Stack
+[**Live API Host**](https://pola-mounir.vercel.app/) • [**GitHub Repository**](https://github.com/polamounir/pola-portfolio-server)
 
-- **Runtime**: Node.js
-- **Framework**: Express.js
-- **Database**: MongoDB with Mongoose ODM
-- **Authentication**: JSON Web Tokens (JWT) & bcryptjs
-- **File Storage**: Cloudinary & Multer
-- **Architecture**: Controller-Service-Route Pattern
+</div>
 
-## Documentation
-
-Detailed documentation for developers can be found in the `docs/` directory:
-
-- [Setup Guide](./docs/SETUP.md): Instructions on how to configure and run the project locally.
-- [Architecture & Database](./docs/ARCHITECTURE.md): An overview of the folder structure and MongoDB database models.
-- [API Reference](./docs/API_REFERENCE.md): Comprehensive details on all available endpoints, request bodies, and the unified response structure.
-
-## Quick Start
-
-```bash
-# Install dependencies
-npm install
-
-# Setup environment variables
-cp .env.example .env
-
-# Start development server
-npm run dev
-```
+---
 
 ## Features
-- Unified standard JSON response structure for both success and error states.
-- Secure Admin login.
-- Dynamic navigation links management.
-- Real-time visitor tracking and hit counting.
-- Image uploads powered by Cloudinary.
 
+- **Controller-Service-Route Architecture**: Clean separation of concerns adhering to SOLID backend principles.
+- **RESTful Endpoints**: Full CRUD support for Projects, Skills, Experiences, Navigation Links, Profile details, Alert Banners, and Custom Themes.
+- **Authentication & Security**: JWT-based access & refresh token rotation, bcrypt password hashing, and CORS protection.
+- **Cloudinary Media Storage**: Automated image optimization and document upload endpoints via Multer and Cloudinary SDK.
+- **Visitor Analytics & Telemetry**: IP tracking, user-agent parsing, browser fingerprinting, and hit counter tracking.
+- **Unified API Response Standard**: Standardized `ApiResponse` and `ApiError` utility wrappers for consistent client consumption.
 
+---
 
+## Technology Stack
 
+| Category | Technology |
+|---|---|
+| **Runtime & Framework** | Node.js, Express.js |
+| **Database & ODM** | MongoDB, Mongoose |
+| **Authentication** | JSON Web Tokens (JWT), bcryptjs |
+| **File Storage** | Cloudinary, Multer |
+| **Validation & Helpers** | Express Async Handler, Cors, Dotenv |
 
+---
 
+## API Routes Overview
 
+| Base Endpoint | Method | Description | Auth Required |
+|---|---|---|---|
+| `/api/v1/auth/login` | `POST` | Authenticate admin user | No |
+| `/api/v1/auth/refresh-token` | `POST` | Refresh JWT access token | No |
+| `/api/v1/profile` | `GET / PUT` | Retrieve & update developer profile details | PUT only |
+| `/api/v1/projects` | `GET / POST / PUT / DELETE` | Manage portfolio projects | POST / PUT / DELETE |
+| `/api/v1/skills` | `GET / POST / PUT / DELETE` | Manage technical skills | POST / PUT / DELETE |
+| `/api/v1/experiences` | `GET / POST / PUT / DELETE` | Manage work experience items | POST / PUT / DELETE |
+| `/api/v1/navigation-links` | `GET / POST / PUT / DELETE` | Custom navigation links | POST / PUT / DELETE |
+| `/api/v1/messages` | `GET / POST / DELETE` | Contact form submission & message inbox | GET / DELETE |
+| `/api/v1/visitors` | `GET / POST` | Log visitor telemetry & retrieve statistics | GET only |
+| `/api/v1/alert` | `GET / PUT` | Global maintenance banner alert settings | PUT only |
+| `/api/v1/theme` | `GET / PUT` | Frontend portfolio color theme configuration | PUT only |
 
+---
 
+## Project Structure
 
+```text
+portfoilo-server/
+├── docs/                    # Technical documentation
+│   ├── API_REFERENCE.md     # Endpoint specifications & sample payloads
+│   ├── ARCHITECTURE.md      # Data model schemas & system design
+│   └── SETUP.md             # Detailed installation guide
+├── public/                  # Static file uploads & sample resumes
+├── src/
+│   ├── config/              # MongoDB connection & Cloudinary config
+│   ├── controllers/         # API Route Handlers
+│   ├── middlewares/         # Auth, Error & Visitor logging middlewares
+│   ├── models/              # Mongoose Database Schemas
+│   ├── routes/              # Express Router definitions
+│   ├── services/            # Business logic service layer
+│   ├── utils/               # ApiError, ApiResponse & asyncHandler
+│   ├── app.js               # Express application initialization
+│   └── server.js            # Server entry point & DB bootstrap
+├── seed.js                  # Database initial seed script
+├── create-admin.js          # Admin account creation utility script
+├── upload-project-images.js # Batch image upload utility
+├── vercel.json              # Serverless configuration
+└── package.json             # Server dependencies
+```
 
+---
 
+## Getting Started
 
+### Prerequisites
+- Node.js (v18.0.0 or higher)
+- MongoDB instance (Local or MongoDB Atlas cluster)
+- Cloudinary Account (for image & document uploads)
 
+### Local Setup Instructions
 
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/polamounir/pola-portfolio-server.git
+   cd pola-portfolio-server
+   ```
 
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
+3. **Configure Environment Variables**:
+   Create a `.env` file in the root folder with the following variables:
+   ```env
+   PORT=5000
+   NODE_ENV=development
+   MONGODB_URI=mongodb://localhost:27017/portfolio
+   JWT_SECRET=your_jwt_secret_key
+   JWT_EXPIRE=1d
+   REFRESH_TOKEN_SECRET=your_refresh_token_secret
+   REFRESH_TOKEN_EXPIRE=7d
+   CLOUDINARY_CLOUD_NAME=your_cloudinary_name
+   CLOUDINARY_API_KEY=your_cloudinary_api_key
+   CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+   ```
 
+4. **Seed initial database (Optional)**:
+   ```bash
+   node seed.js
+   ```
 
+5. **Start the development server**:
+   ```bash
+   npm run dev
+   ```
 
-Create a premium, minimalist, highly distinctive logo identity for a modern web developer named “POLA”.
+---
 
-MAIN MONOGRAM — REDESIGN COMPLETELY:
-Replace the existing generic loop/interlocking symbol with a new, custom-designed abstract monogram. Build the emblem from a small number of elegant continuous strokes and precisely connected geometric curves.
+## Contact & Developer Info
 
-The monogram should subtly encode the characters P, O, L, and A into ONE unified symbol, but do NOT draw the letters literally and do not make the letters immediately obvious. The viewer should discover the hidden letter structure gradually.
+- **Developer**: Pola Mounir
+- **Email**: [polamounir103@gmail.com](mailto:polamounir103@gmail.com)
+- **LinkedIn**: [linkedin.com/in/pola-mounir-samir](https://www.linkedin.com/in/pola-mounir-samir/)
+- **GitHub**: [github.com/polamounir](https://github.com/polamounir)
 
-Design the symbol with:
-- one strong continuous outer stroke suggesting the P/O structure
-- a refined internal curved connection suggesting O and L
-- a sharp but elegant diagonal connection suggesting A
-- carefully controlled negative space
-- rounded corners combined with one or two precise geometric angles
-- consistent, intentional stroke thickness
-- perfect visual symmetry and optical balance
-- a distinctive silhouette that remains recognizable even at very small sizes
-- no unnecessary decorative elements
-- no complicated 3D machinery
-- no excessive overlapping ribbons
-- no random shapes
+---
 
-The result should feel like a professionally designed technology brand mark, comparable to a high-end architecture, software, or creative technology identity.
+## License
 
-CODING REFERENCE:
-Integrate a very subtle “</>” or abstract coding-bracket concept into the negative space of the monogram rather than placing an obvious code symbol on top of it. It should feel intelligently hidden within the geometry.
-
-MATERIAL / COLOR:
-Use a sophisticated two-tone identity:
-- deep charcoal / graphite as the primary structural color
-- restrained brushed copper-gold as the secondary accent
-The copper should highlight only selected portions of the monogram, not dominate it.
-
-Keep the metallic treatment subtle and premium. Avoid overly shiny gold, excessive reflections, glowing LEDs, circuit boards, futuristic sci-fi details, or ornamental textures.
-
-TYPOGRAPHY:
-Under the emblem, place:
-
-<POLA>
-
-Use a clean, premium geometric sans-serif typeface similar to Montserrat, Avenir, Gotham, or Neue Haas Grotesk.
-All caps, medium weight, excellent letter spacing, deep charcoal.
-
-Directly underneath:
-
-WEB DEVELOPER
-
-Use smaller uppercase typography with generous tracking and precise alignment.
-
-COMPOSITION:
-Centered logo.
-Large amount of negative space.
-Cream/off-white premium paper background with very subtle natural texture.
-Minimal studio lighting.
-Subtle realistic embossing and shallow material depth.
-Extremely clean presentation.
-
-IMPORTANT:
-The emblem itself is the hero. It must look like a real professional vector logo translated into a premium physical material—not like an illustration or piece of abstract artwork.
-
-Avoid:
-literal P/O/L/A letters inside the emblem,
-generic infinity symbols,
-generic interlocking circles,
-complex ribbons,
-excessive 3D effects,
-circuit-board patterns,
-LED lights,
-busy details,
-random geometric fragments,
-drop shadows,
-mockup props,
-business cards,
-extra text,
-decorations.
-
-Overall aesthetic:
-minimal luxury + modern technology + architectural precision + intelligent negative space + timeless brand identity.
-
-The final symbol should be simple enough to reproduce as a flat black-and-white vector logo, while the presentation can use subtle charcoal and copper materials.
-
-
-
-###############################################
-A high-resolution, detailed photograph of a unique, luxury-abstracted monogram logo for a web developer named 'POLA', presented centrally on a premium, clean off-white textured paper surface against a subtly lit studio background. The logo is a sophisticated, non-representational, and sculptural form created from intertwining lines and interwoven geometric and organic shapes, primarily rendered in polished copper-gold and deep charcoal gray with warm metallic finishes.
-
-This intricate, continuous form abstractly embodies the letters 'P O L A' through its loops and structural connections, avoiding literal letterforms in favor of a conceptual emblem. The design is modern, geometric, and precise, featuring sweeping curves, interlocking geometric segments, and varying line weights that create a sense of balance, flow, structure, and innovation, like a high-tech architectural concept. Embedded discreetly within the copper-gold linework are subtle, glowing warm-white LED-like circuit patterns, network node connections, and a few abstract code snippets (like <> and {}) to subtly signify web development.
-
-Below the main luxury-abstracted emblem, the name 'POLA' is centered in a refined, minimalist, all-caps sans-serif font (Montserrat or similar), rendered in deep charcoal gray, framed by clean, matching charcoal code angle brackets: <POLA>. Below 'POLA', in smaller, evenly-spaced all-caps charcoal text, is the descriptor: WEB DEVELOPER.
-
-The metallic elements of the logo feature rich, brushed, and polished surfaces that catch the sophisticated directional lighting, creating elegant highlights and a sense of depth and value. The paper has a natural, fibrous texture. The composition is clean, centered, and balanced, with ample negative space. The overall impression is one of modern elegance, technical proficiency, and high-end craftsmanship. No drop shadows are used, relying on true depth and material.
+This project is open-source under the [MIT License](LICENSE).
