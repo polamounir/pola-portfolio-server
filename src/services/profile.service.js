@@ -30,12 +30,35 @@ const updateProfile = async (updateData, files) => {
   }
 
   // Update text fields
-  const updatableFields = ["name", "title", "shortBio", "detailedBio"];
+  const updatableFields = [
+    "name",
+    "title",
+    "shortBio",
+    "detailedBio",
+    "headline",
+    "yearsOfExperience",
+    "linesOfCode",
+  ];
   updatableFields.forEach((field) => {
     if (updateData[field] !== undefined) {
       profile[field] = updateData[field];
     }
   });
+
+  if (updateData.aboutParagraphs !== undefined) {
+    if (typeof updateData.aboutParagraphs === "string") {
+      try {
+        profile.aboutParagraphs = JSON.parse(updateData.aboutParagraphs);
+      } catch {
+        profile.aboutParagraphs = updateData.aboutParagraphs
+          .split("\n\n")
+          .map((p) => p.trim())
+          .filter(Boolean);
+      }
+    } else if (Array.isArray(updateData.aboutParagraphs)) {
+      profile.aboutParagraphs = updateData.aboutParagraphs;
+    }
+  }
 
   if (updateData.bio) {
     profile.shortBio = updateData.bio;

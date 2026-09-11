@@ -40,6 +40,23 @@ const projectSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    slug: {
+      type: String,
+      trim: true,
+      index: true,
+    },
+    fullDescription: {
+      type: String,
+      default: "",
+    },
+    datePublished: {
+      type: String,
+      default: "",
+    },
+    dateModified: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true }
 );

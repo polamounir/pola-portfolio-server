@@ -6,6 +6,10 @@ const profileSchema = new mongoose.Schema(
     title: { type: String, required: true },
     shortBio: { type: String },
     detailedBio: { type: String },
+    headline: { type: String },
+    yearsOfExperience: { type: String, default: "1+" },
+    linesOfCode: { type: String, default: "40K+" },
+    aboutParagraphs: [{ type: String }],
     avatarUrl: { type: String },
     resumeUrl: { type: String },
     contact: {

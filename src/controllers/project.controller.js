@@ -14,8 +14,36 @@ const getProjectById = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse(200, project, "Project fetched successfully"));
 });
 
+const slugify = (text) => {
+  return (text || "")
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9\-]/g, "")
+    .replace(/\-{2,}/g, "-")
+    .replace(/^-+/, "")
+    .replace(/-+$/, "");
+};
+
 const createProject = asyncHandler(async (req, res) => {
-  let { title, description, technologies, links, order, status, lines, iconEmoji, liveDemo, github, thumbnail } = req.body;
+  let {
+    title,
+    description,
+    technologies,
+    links,
+    order,
+    status,
+    lines,
+    iconEmoji,
+    liveDemo,
+    github,
+    thumbnail,
+    slug,
+    fullDescription,
+    datePublished,
+    dateModified,
+  } = req.body;
   
   if (typeof technologies === 'string') {
     try { technologies = JSON.parse(technologies); } catch { technologies = technologies.split(',').map(s => s.trim()).filter(Boolean); }
@@ -28,6 +56,8 @@ const createProject = asyncHandler(async (req, res) => {
   if (liveDemo) links.liveDemo = liveDemo;
   if (github) links.github = github;
 
+  const finalSlug = (slug && slug.trim()) || slugify(title) || `project-${Date.now()}`;
+
   const newProject = new Project({
     title,
     description,
@@ -37,6 +67,10 @@ const createProject = asyncHandler(async (req, res) => {
     status: status || "Production",
     lines: lines || "",
     iconEmoji: iconEmoji || "",
+    slug: finalSlug,
+    fullDescription: fullDescription || description || "",
+    datePublished: datePublished || new Date().toISOString().split("T")[0],
+    dateModified: dateModified || new Date().toISOString().split("T")[0],
   });
 
   if (thumbnail && typeof thumbnail === 'string') {
@@ -60,7 +94,23 @@ const updateProject = asyncHandler(async (req, res) => {
   const project = await Project.findById(req.params.id);
   if (!project) throw new ApiError(404, "Project not found");
 
-  let { title, description, technologies, links, order, status, lines, iconEmoji, liveDemo, github, thumbnail } = req.body;
+  let {
+    title,
+    description,
+    technologies,
+    links,
+    order,
+    status,
+    lines,
+    iconEmoji,
+    liveDemo,
+    github,
+    thumbnail,
+    slug,
+    fullDescription,
+    datePublished,
+    dateModified,
+  } = req.body;
 
   if (title) project.title = title;
   if (description) project.description = description;
@@ -84,6 +134,16 @@ const updateProject = asyncHandler(async (req, res) => {
   if (status !== undefined) project.status = status;
   if (lines !== undefined) project.lines = lines;
   if (iconEmoji !== undefined) project.iconEmoji = iconEmoji;
+
+  if (slug !== undefined) {
+    project.slug = (slug && slug.trim()) || slugify(project.title);
+  } else if (!project.slug && project.title) {
+    project.slug = slugify(project.title);
+  }
+
+  if (fullDescription !== undefined) project.fullDescription = fullDescription;
+  if (datePublished !== undefined) project.datePublished = datePublished;
+  if (dateModified !== undefined) project.dateModified = dateModified;
 
   if (thumbnail && typeof thumbnail === 'string') {
     if (!project.images) project.images = { gallery: [] };
