@@ -22,7 +22,16 @@ const updateProfile = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse(200, profile, "Profile updated successfully"));
 });
 
+const getResume = asyncHandler(async (req, res) => {
+  const profile = await profileService.getProfile();
+  if (!profile || !profile.resumeUrl) {
+    return res.status(404).json(new ApiResponse(404, null, "No resume uploaded"));
+  }
+  return res.redirect(profile.resumeUrl);
+});
+
 module.exports = {
   getProfile,
   updateProfile,
+  getResume,
 };
