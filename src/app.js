@@ -48,6 +48,7 @@ const themeRouter = require("./routes/theme.routes");
 const faqRouter = require("./routes/faq.routes");
 const certificationRouter = require("./routes/certification.routes");
 const toolRouter = require("./routes/tool.routes");
+const initRouter = require("./routes/init.routes");
 
 // Health check route
 app.get("/", (req, res) => {
@@ -59,6 +60,7 @@ app.get("/", (req, res) => {
 });
 
 // Routes declaration
+app.use("/api/v1/init", initRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/profile", profileRouter);
 app.use("/api/v1/projects", projectRouter);
