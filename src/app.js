@@ -16,13 +16,21 @@ app.use(
   })
 );
 
-// Prevent caching of CORS headers and dynamic API responses across different client origins
+// Smart HTTP Cache-Control & CORS policy
 app.use((req, res, next) => {
-  res.setHeader("Vary", "Origin");
-  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  res.setHeader("Vary", "Origin, Accept-Encoding");
   if (req.method === "OPTIONS") {
     return res.sendStatus(204);
   }
+
+  // Allow caching for public read requests (drastically reduces server load & latency)
+  if (req.method === "GET" && !req.headers.authorization && !req.path.startsWith("/api/v1/auth")) {
+    res.setHeader("Cache-Control", "public, max-age=60, s-maxage=300, stale-while-revalidate=600");
+  } else {
+    // Admin mutations & auth endpoints remain uncached
+    res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  }
+
   next();
 });
 

@@ -1,6 +1,7 @@
 const Alert = require("../models/alert.model");
 const ApiResponse = require("../utils/ApiResponse");
 const asyncHandler = require("../utils/asyncHandler");
+const { invalidateInitCache } = require("../utils/cache");
 
 const getAlert = asyncHandler(async (req, res) => {
   let alert = await Alert.findOne();
@@ -18,6 +19,7 @@ const updateAlert = asyncHandler(async (req, res) => {
     Object.assign(alert, req.body);
     await alert.save();
   }
+  invalidateInitCache();
   res.status(200).json(new ApiResponse(200, alert, "Alert settings updated successfully"));
 });
 

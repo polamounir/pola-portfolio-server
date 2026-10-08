@@ -2,6 +2,7 @@ const Project = require("../models/project.model");
 const ApiError = require("../utils/ApiError");
 const ApiResponse = require("../utils/ApiResponse");
 const asyncHandler = require("../utils/asyncHandler");
+const { invalidateInitCache } = require("../utils/cache");
 
 const getAllProjects = asyncHandler(async (req, res) => {
   const projects = await Project.find().sort({ order: 1, createdAt: -1 });
@@ -87,6 +88,7 @@ const createProject = asyncHandler(async (req, res) => {
   }
 
   await newProject.save();
+  invalidateInitCache();
   res.status(201).json(new ApiResponse(201, newProject, "Project created successfully"));
 });
 
@@ -162,12 +164,14 @@ const updateProject = asyncHandler(async (req, res) => {
   }
 
   await project.save();
+  invalidateInitCache();
   res.status(200).json(new ApiResponse(200, project, "Project updated successfully"));
 });
 
 const deleteProject = asyncHandler(async (req, res) => {
   const project = await Project.findByIdAndDelete(req.params.id);
   if (!project) throw new ApiError(404, "Project not found");
+  invalidateInitCache();
   res.status(200).json(new ApiResponse(200, null, "Project deleted successfully"));
 });
 

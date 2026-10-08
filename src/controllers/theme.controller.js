@@ -1,6 +1,7 @@
 const Theme = require("../models/theme.model");
 const ApiResponse = require("../utils/ApiResponse");
 const asyncHandler = require("../utils/asyncHandler");
+const { invalidateInitCache } = require("../utils/cache");
 
 const getTheme = asyncHandler(async (req, res) => {
   let theme = await Theme.findOne();
@@ -18,6 +19,7 @@ const updateTheme = asyncHandler(async (req, res) => {
     Object.assign(theme, req.body);
     await theme.save();
   }
+  invalidateInitCache();
   res.status(200).json(new ApiResponse(200, theme, "Theme settings updated successfully"));
 });
 

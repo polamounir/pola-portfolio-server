@@ -1,6 +1,7 @@
 const asyncHandler = require("../utils/asyncHandler");
 const ApiResponse = require("../utils/ApiResponse");
 const profileService = require("../services/profile.service");
+const { invalidateInitCache } = require("../utils/cache");
 
 const getProfile = asyncHandler(async (req, res) => {
   const profile = await profileService.getProfile();
@@ -19,6 +20,7 @@ const updateProfile = asyncHandler(async (req, res) => {
   }
 
   const profile = await profileService.updateProfile(updateData, req.files);
+  invalidateInitCache();
   res.status(200).json(new ApiResponse(200, profile, "Profile updated successfully"));
 });
 
